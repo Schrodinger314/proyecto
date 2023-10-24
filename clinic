@@ -1,0 +1,1977 @@
+#include<iostream>
+#include"rlutil.h"
+#include<limits>
+using namespace rlutil;
+using namespace std;
+void ayuda();
+void seleccionarServicio();
+//rectangulo
+void rectangulo_1(int x,int y ,int ancho,int alto,const char*texto){
+	cls();
+	
+	for(int i=x;i<=x+ancho;i++){
+		locate(i,y);
+		cout<<'=';
+		locate(i,y+alto);
+		cout<<'_';
+	}
+	
+	for(int i=y;i<=y+alto;i++){
+		locate(x,i);
+		cout<<'|';
+		locate(x+ancho,i);
+		cout<<'|';
+	}
+	
+	locate(41,7);
+	cout<<texto;
+	
+	locate(20,20);	
+}
+void rectangulo(int x,int y ,int ancho,int alto,const char*texto){
+	cls();
+	
+	for(int i=x;i<=x+ancho;i++){
+		locate(i,y);
+		cout<<'=';
+		locate(i,y+alto);
+		cout<<'_';
+	}
+	
+	for(int i=y;i<=y+alto;i++){
+		locate(x,i);
+		cout<<'|';
+		locate(x+ancho,i);
+		cout<<'|';
+	}
+	
+	locate(66,2);
+	cout<<texto;
+	
+	locate(20,20);	
+}
+
+struct Persona {
+    string nombre;
+    string numero_telefono;
+    string numero_dni;
+    string fecha_nacimiento; 
+    int edad;
+};
+
+struct Horario {
+	string especialidad;
+    string dia;
+    string horaInicio;
+    string horaFin;
+};
+
+const int MAX_HORARIOS = 100; // o cualquier otro límite que consideres adecuado
+Horario listaHorarios[MAX_HORARIOS];
+int totalHorarios = 0; // llevará la cuenta de cuántos horarios se han guardado
+
+Horario horarioElegido;
+
+Persona ingresarDatosPersona() {
+    Persona nuevaPersona;
+    
+    locate(45,6);cout<< "NOMBRE                          : ";
+    getline(cin, nuevaPersona.nombre);
+    
+    locate(45,7);cout<< "NUMERO DE TELEFONO              : ";
+    getline(cin, nuevaPersona.numero_telefono);  
+    
+    locate(45,8);cout<< "NUMERO DE DNI                   : ";
+    getline(cin, nuevaPersona.numero_dni);
+    
+    locate(45,9);cout<< "FECHA DE NACIMIENTO (DD/MM/AAAA): ";
+    getline(cin, nuevaPersona.fecha_nacimiento);
+    
+    locate(45,10);cout<<"EDAD                            : ";
+    cin >> nuevaPersona.edad;
+    
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignora todos los caracteres restantes hasta el próximo salto de línea
+    
+    locate(45,11); cout << "-DATOS GUARDADOS-" << endl;
+    cin.get();
+    return nuevaPersona;
+   
+}
+
+void mostrarDatosPersona(const Persona& persona) {
+    cls(); // Limpia la pantalla antes de mostrar los datos
+    saveDefaultColor();
+    setColor(rlutil::CYAN);
+    rectangulo_1(39,8,45,8,"PERFIL");
+    resetColor();
+    locate(40, 9);  cout << "NOMBRE             : " << persona.nombre           << endl;
+    locate(40,10);  cout << "NUMERO DE TELEFONO : " << persona.numero_telefono  << endl;
+    locate(40,11);  cout << "NUMERO DE  DNI     : " << persona.numero_dni       << endl;
+    locate(40,12);  cout << "FECHA DE NACIMIENTO: " << persona.fecha_nacimiento << endl;
+    locate(40, 13); cout << "EDAD               : " << persona.edad             << endl;
+    setColor(LIGHTGREEN);
+    locate(40, 14); cout << "Presione ENTER para ir al menu principal...";
+    resetColor();
+    cin.get(); // Espera a que el usuario presione Enter
+    cls();
+    
+}
+
+// Función para borrar la flecha y el horario
+void limpiarflecha() { 
+    // Borra la flecha
+    for(int i = 0; i < 20; ++i) { // Asumiendo que hay 20 líneas como máximo
+        locate(39,12+i); cout << " " << endl;
+    }
+    // Borra el horario
+    for(int i = 0; i < 15; ++i) { // Asegúrate de cubrir el área del horario
+        locate(72,12+i); cout << "                                                         " << endl;
+    }
+}
+
+struct Servicio {
+    string nombre;
+    int precio;
+};
+
+// Array de servicios disponibles
+Servicio servicios[] = {
+    {"Analisis de sangre            ", 60},
+    {"Radiografias                  ", 95},
+    {"Ultrasonido                   ", 125},
+    {"Tomografia computarizada (TAC)", 350},
+    {"Resonancia magnetica (MRI)    ", 550},
+    {"Mamografias                   ", 140},
+    {"Pruebas de alergia            ", 125},
+    {"Pruebas de densidad osea      ", 110}
+   
+};
+
+void serviciosD_L() {
+
+	
+    locate(40, 9);  cout << " ________________________________________________"  << endl;
+    locate(40, 10); cout << "|            diagnostico y laboratorio           |" <<endl;
+    locate(40, 11); cout << "|------------------------------------------------|" <<endl;
+    locate(40, 12); cout << "|1.-" << servicios[0].nombre << ": $" << servicios[0].precio << "          |" << endl; //lista
+    locate(40, 13); cout << "|2.-" << servicios[1].nombre << ": $" << servicios[1].precio << "          |" << endl;
+    locate(40, 14); cout << "|3.-" << servicios[2].nombre << ": $" << servicios[2].precio << "         |" << endl;
+    locate(40, 15); cout << "|4.-" << servicios[3].nombre << ": $" << servicios[3].precio << "         |" << endl;
+    locate(40, 16); cout << "|5.-" << servicios[4].nombre << ": $" << servicios[4].precio << "         |" << endl;
+    locate(40, 17); cout << "|6.-" << servicios[5].nombre << ": $" << servicios[5].precio << "         |" << endl;
+    locate(40, 18); cout << "|7.-" << servicios[6].nombre << ": $" << servicios[6].precio << "         |" << endl;
+    locate(40, 19); cout << "|8.-" << servicios[7].nombre << ": $" << servicios[7].precio << "         |" << endl;
+    locate(40, 20); cout << "|________________________________________________|" <<endl;
+    
+  
+   	seleccionarServicio();
+   	system("cls");
+	}
+
+int serviciosSeleccionados[8] = {0}; // Inicialmente, ningún servicio ha sido seleccionado es como decir int serviciosSeleccionados[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+void mostrarBoleta() {
+
+    int total = 0;
+    locate(40,10);
+    cout << "BOLETAS DE SERVICIOS SELECCIONADOS:" << endl;
+    for (int i = 0; i < 8; ++i) 
+	{ // numero de servicios 
+        if (serviciosSeleccionados[i] > 0)
+		 {
+		 	locate(40,11+i);
+            cout << servicios[i].nombre << ": " << servicios[i].precio << " x " << serviciosSeleccionados[i];
+            total += servicios[i].precio * serviciosSeleccionados[i];
+        }
+    }
+    locate(40,19);
+    cout << "Total a pagar: $" << total << endl;
+    locate(40,21);
+    system("pause");
+    cls();
+}
+
+void seleccionarServicio() {
+	
+	locate(40,22);
+    cout << "ELIJA UN  SERVICIO: ";
+    
+    int numeroDeServicio;
+    locate(63,22);
+    cin >> numeroDeServicio;
+    
+    
+    if(numeroDeServicio >= 1 && numeroDeServicio <= 8)
+	 { // Asegurándonos de que sea una selección válida
+        serviciosSeleccionados[numeroDeServicio-1]++; // -1 porque   los arrays comienzan en  0
+		locate(40,24);
+        cout << "Servicio '" << servicios[numeroDeServicio-1].nombre << " ha sido seleccionado" << endl;
+    } 
+	else 
+	{
+    	locate(40,24);
+        cout << "Numero de servicio invalido. Intente de nuevo." << endl;
+    }
+    locate(40,26);
+    system("pause");
+    
+    
+}
+
+
+void agendar() {
+    int op = 1, y = 0;
+    int h;
+    
+     
+    do {
+    	hidecursor();
+    	//solo en el menu-
+        locate(40,9); cout  << " ______________________________" << endl;
+        locate(40,10); cout << "|        ESPECIALIDADES        |" << endl;
+        locate(40,11); cout << "|______________________________|" << endl;
+        locate(40,12); cout << "|1. Medicina General/Familiar  |" << endl;
+        locate(40,13); cout << "|2. Pediatria                  |" << endl;
+        locate(40,14); cout << "|3. Ginecologia y Obstetricia  |" << endl;
+        locate(40,15); cout << "|4. Cardiologia                |" << endl;
+        locate(40,16); cout << "|5. Dermatologia               |" << endl;
+        locate(40,17); cout << "|6. Endocrinologia             |" << endl;
+        locate(40,18); cout << "|7. Gastroenterologia          |" << endl;
+        locate(40,19); cout << "|8. Geriatria                  |" << endl;
+        locate(40,20); cout << "|9. Hematologia                |" << endl;
+        locate(40,21); cout << "|10. Infectologia              |" << endl;
+        locate(40,22); cout << "|11. Nefrologia                |" << endl;
+        locate(40,23); cout << "|12. Neumologia                |" << endl;
+        locate(40,24); cout << "|13. Neurologia                |" << endl;
+        locate(40,25); cout << "|14. Oncologia                 |" << endl;
+        locate(40,26); cout << "|15. Oftalmologia              |" << endl;
+        locate(40,27); cout << "|16. Ortopedia                 |" << endl;
+        locate(40,28); cout << "|17. Otorrinolaringologia      |" << endl;
+        locate(40,29); cout << "|18. Psiquiatria               |" << endl;
+        locate(40,30); cout << "|19. Reumatologia              |" << endl;
+        locate(40,31); cout << "|_0.salir______________________|" << endl;
+        locate(39,12+y);
+        cout << (char)175 <<endl; // Flecha
+
+        switch(getkey()) {
+            case 14: // arriba
+                limpiarflecha(); // Borra la flecha y el horario
+                y--;
+                if(y < 0) {
+                    y = 0;
+                }
+                break; 
+            case 15: // abajo
+                limpiarflecha(); // Borra la flecha y el horario
+                y++;
+                if(y > 19) {
+                    y = 19;
+                }
+                break;
+            case 1: // ENTER
+                switch(y) {
+               case 0:
+			        locate(72,12); cout << "---->| HORARIO                          |" << endl;
+			        locate(72,13); cout << "     |1.-Lunes: 9:00 AM - 1:00 PM       |" << endl;
+			        locate(72,14); cout << "     |2.- Miercoles: 2:00 PM - 6:00 PM  |" << endl;
+			        locate(72,15); cout << "     |3.- Viernes: 9:00 AM - 1:00 PM    |" <<endl;
+			        locate(72,17);cout<<   "     |elija un horario:                 |"<<endl;
+			        locate(96,17);cin>>h;
+			        switch(h){
+			        	case 1:
+				        	if (totalHorarios < MAX_HORARIOS) {
+				        		
+				        	horarioElegido.especialidad="Medicina General/Familiar";
+	                        horarioElegido.dia        = "Lunes"  ;
+	                        horarioElegido.horaInicio = "9:00 AM";
+	                        horarioElegido.horaFin    = "1:00 PM";
+	                        
+	                        listaHorarios[totalHorarios++] = horarioElegido;
+	                        
+	                        locate(78,20);
+	                        cout <<" _______________________________"<<endl;
+	                        locate(78,21);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,22);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"       |"<< endl;
+							locate (78,23);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,24);
+							system("pause");
+							cls();
+			        	
+					        }else 
+							{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+						break;
+					
+			        	case 2:
+			        		if (totalHorarios < MAX_HORARIOS) {
+			        			
+			        		horarioElegido.especialidad="Medicina General/Familiar";
+			        		horarioElegido.dia        = "Mielcoles";
+                        	horarioElegido.horaInicio = "2:00 pm"  ;
+                            horarioElegido.horaFin    = "6:00 PM"  ;
+                            
+                            listaHorarios[totalHorarios++] = horarioElegido;
+                            
+                            locate(78,20);
+                            cout <<" _______________________________"<<endl;
+	                        locate(78,21);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,22);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<< endl;
+							locate (78,23);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,24);
+							system("pause");
+							cls();
+                            
+                            
+						}else{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+			        	break;
+			        	
+			        	case 3:
+			        		if(totalHorarios < MAX_HORARIOS){
+			        			
+							horarioElegido.especialidad="Medicina General/Familiar";
+			        		horarioElegido.dia        = "Viernes"; // Debe ser diferente del case 1
+			                horarioElegido.horaInicio = "9:00 AM"; // Asume que quieres mantener el mismo horario
+			                horarioElegido.horaFin    = "1:00 PM";
+			                
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			                
+                            locate(78,20);
+                            cout <<" _______________________________"<<endl;
+	                        locate(78,21);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,22);
+							cout <<"| "<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"    |"<< endl;
+							locate (78,23);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,24);
+							system("pause");
+							cls();
+								}else{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+							break;
+							default:
+			        		locate(78,21); cout << "Opcion invalida" << endl;		
+			        		break;	
+					}
+					break;
+			    case 1:
+			        locate(72,13); cout << "---->| HORARIO                           |" << endl;
+			        locate(72,14); cout << "     |1.-Martes: 9:00 AM - 1:00 PM       |" << endl;
+			        locate(72,15); cout << "     |2.-Jueves: 2:00 PM - 6:00 PM       |" << endl;
+			        locate(72,16); cout << "     |3.-Sabado: 9:00 AM - 1:00 PM       |" << endl;
+			        locate(72,17); cout << "     |        -cada 2 semanas            |" <<endl;
+			        locate(72,19); cout << "     |elija un horario:                  |"<<endl;
+			        locate(96,19); cin>>h;
+			        switch(h){
+			        	case 1:
+				        	if (totalHorarios < MAX_HORARIOS) {
+				        		
+				        	horarioElegido.especialidad="Pediatria";	
+	                        horarioElegido.dia        = "Martes"  ;
+	                        horarioElegido.horaInicio = "9:00 AM";
+	                        horarioElegido.horaFin    = "1:00 PM";
+	                        
+	                        listaHorarios[totalHorarios++] = horarioElegido;
+	                        
+	                        locate(78,22);
+	                        cout <<" _______________________________"<<endl;
+	                        locate(78,23);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,24);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"      |"<< endl;
+							locate (78,25);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,26);
+							system("pause");
+							cls();
+			        	
+					        }else 
+							{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+						break;
+					
+			        	case 2:
+			        		if (totalHorarios < MAX_HORARIOS) {
+			        		horarioElegido.especialidad="Pediatria";
+			        		horarioElegido.dia        = "Jueves";
+                        	horarioElegido.horaInicio = "2:00 pm"  ;
+                            horarioElegido.horaFin    = "6:00 PM"  ;
+                            
+                            listaHorarios[totalHorarios++] = horarioElegido;
+                            
+                            locate(78,22);
+                            cout <<" _______________________________"<<endl;
+	                        locate(78,23);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,24);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"      |"<< endl;
+							locate (78,25);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,26);
+							system("pause");
+							cls();
+                            
+                            
+						}else{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+			        	break;
+			        	
+			        	case 3:
+			        		if(totalHorarios < MAX_HORARIOS){
+			        			
+							horarioElegido.especialidad="Pediatria";
+			        		horarioElegido.dia        = "Sabado"; // Debe ser diferente del case 1
+			                horarioElegido.horaInicio = "9:00 AM"; // Asume que quieres mantener el mismo horario
+			                horarioElegido.horaFin    = "1:00 PM";
+			                
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			                
+                            locate(78,20);
+                            cout <<" _______________________________"<<endl;
+	                        locate(78,21);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,22);
+							cout <<"| "<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"     |"<< endl;
+							locate (78,23);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,24);
+							system("pause");
+							cls();
+								}else{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+							
+							break;
+							
+							default:
+			        		locate(78,21); cout << "Opcion invalida" << endl;
+			        		break;		
+					}
+			        break;
+			    case 2:
+			        locate(72,14); cout << "---->| HORARIO                           |" << endl;
+			        locate(72,15); cout << "     |1.-Lunes: 2:00 PM - 6:00 PM        |" << endl;
+			        locate(72,16); cout << "     |2.-Miercoles: 9:00 AM - 1:00 PM    |" << endl;
+			        locate(72,17); cout << "     |3.-Viernes: 2:00 PM - 6:00 PM      |" << endl;
+			        locate(72,19); cout << "     |elija un horario                   |" << endl;
+			        locate(96,19); cin>>h;
+			         switch(h){
+			        	case 1:
+				        	if (totalHorarios < MAX_HORARIOS) {
+				        	horarioElegido.especialidad = "Ginecologia y Obstetricia";
+	                        horarioElegido.dia        = "Lunes"  ;
+	                        horarioElegido.horaInicio = "2:00 PM";
+	                        horarioElegido.horaFin    = "6:00 PM";
+	                        
+	                        listaHorarios[totalHorarios++] = horarioElegido;
+	                        
+	                        locate(78,22);
+	                        cout <<" _______________________________"<<endl;
+	                        locate(78,23);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,24);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"       |"<< endl;
+							locate (78,25);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,26);
+							system("pause");
+							cls();
+			        	
+					        }else 
+							{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+						break;
+					
+			        	case 2:
+			        		if (totalHorarios < MAX_HORARIOS) {
+			        		horarioElegido.especialidad = "Ginecologia y Obstetricia";
+			        		horarioElegido.dia        = "Miercoles";
+                        	horarioElegido.horaInicio = "9:00 AM"  ;
+                            horarioElegido.horaFin    = "1:00 PM"  ;
+                            
+                            listaHorarios[totalHorarios++] = horarioElegido;
+                            
+                            locate(78,22);
+                            cout <<" _______________________________"<<endl;
+	                        locate(78,23);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,24);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"      |"<< endl;
+							locate (78,25);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,26);
+							system("pause");
+							cls();
+                            
+                            
+						}else
+							{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+						break;
+						
+						case 3:
+			        		if (totalHorarios < MAX_HORARIOS) {
+			        		horarioElegido.especialidad = "Ginecologia y Obstetricia";
+			        		horarioElegido.dia        = "Miercoles";
+                        	horarioElegido.horaInicio = "9:00 AM"  ;
+                            horarioElegido.horaFin    = "1:00 PM"  ;
+                            
+                            listaHorarios[totalHorarios++] = horarioElegido;
+                            
+                            locate(78,22);
+                            cout <<" _______________________________"<<endl;
+	                        locate(78,23);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,24);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"      |"<< endl;
+							locate (78,25);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,26);
+							system("pause");
+							cls();
+							}else
+							{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+							break;
+							default:
+			        		locate(78,23); cout << "Opcion invalida" << endl;
+			        	break;
+						}
+					break;
+			    case 3:
+			        locate(72,15); cout << "---->| HORARIO                           |" << endl;
+			        locate(72,16); cout << "     |1.-Martes: 2:00 PM - 6:00 PM       |" << endl;
+			        locate(72,17); cout << "     |2.-Jueves: 9:00 AM - 1:00 PM       |" << endl;
+			        locate(72,18); cout << "     |3.-Sabado: 10:00 AM - 2:00 PM      |" << endl;
+			        locate(72,19); cout << "     |        -cada 2 semanas            |" << endl;
+			        locate(72,21); cout << "     |elija un horario                   |" << endl;
+			        locate(96,21);cin>>h;
+			        switch(h){
+			        	case 1:
+				        	if (totalHorarios < MAX_HORARIOS) {
+				        	horarioElegido.especialidad = "Cardiologia";
+	                        horarioElegido.dia        = "Martes"  ;
+	                        horarioElegido.horaInicio = "2:00 PM";
+	                        horarioElegido.horaFin    = "6:00 PM";
+	                        
+	                        listaHorarios[totalHorarios++] = horarioElegido;
+	                        
+	                        locate(78,24);
+	                        cout <<" _______________________________"<<endl;
+	                        locate(78,25);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,26);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"     |"<< endl;
+							locate (78,27);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,28);
+							system("pause");
+							cls();
+			        	
+					        }else 
+							{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+						break;
+					
+			        	case 2:
+			        		if (totalHorarios < MAX_HORARIOS) {
+			        		horarioElegido.especialidad = "Cardiologia";
+			        		horarioElegido.dia        = "Jueves";
+                        	horarioElegido.horaInicio = "9:00 AM"  ;
+                            horarioElegido.horaFin    = "1:00 PM"  ;
+                            
+                            listaHorarios[totalHorarios++] = horarioElegido;
+                            
+                            locate(78,24);
+                            cout <<" _______________________________"<<endl;
+	                        locate(78,25);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,26);
+							cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"      |"<< endl;
+							locate (78,27);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,28);
+							system("pause");
+							cls();
+                            
+                            
+						}else{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+			        	break;
+			        	
+			        	case 3:
+			        		if(totalHorarios < MAX_HORARIOS){
+			        			
+							horarioElegido.especialidad = "Cardiologia";
+			        		horarioElegido.dia        = "Sabado"; // Debe ser diferente del case 1
+			                horarioElegido.horaInicio = "10:00 AM"; // Asume que quieres mantener el mismo horario
+			                horarioElegido.horaFin    = "2:00  PM";
+			                
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			                
+                            locate(78,24);
+                            cout <<" _______________________________"<<endl;
+	                        locate(78,25);
+                            cout <<"| cita confirmada en el horario |"<<endl;
+                            locate(78,26);
+							cout <<"| "<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"    |"<< endl;
+							locate (78,27);
+							cout <<"|_______________________________|"<<endl;
+							locate(78,28);
+							system("pause");
+							cls();
+								}else{
+							cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+							}
+							break;
+							default:
+			        		locate(78,25); cout << "Opcion invalida" << endl;
+			        	break;	
+					}
+			        break;
+			    case 4:
+			    locate(72,16); cout << "---->| HORARIO                         |" << endl;
+			    locate(72,17); cout << "     |1.-Lunes: 10:00 AM - 2:00 PM     |" << endl;
+			    locate(72,18); cout << "     |2.-Miercoles: 3:00 PM - 7:00 PM  |" << endl;
+			    locate(72,19); cout << "     |3.-Viernes: 10:00 AM - 2:00 PM   |" << endl;
+			    locate(72,21); cout << "     |elija un horario                 |" << endl;
+			    locate(96,21); cin >> h;
+			    switch(h){
+        				case 1:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Dermatologia";
+			                horarioElegido.dia        = "Lunes";
+			                horarioElegido.horaInicio = "10:00 AM";
+			                horarioElegido.horaFin    = "2:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,24);
+			                cout <<" _______________________________ " << endl;
+			                locate(78,25);
+			                cout <<"| cita confirmada en el horario |" << endl;
+			                locate(78,26);
+			                cout <<"| "<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"     |" << endl;
+			                locate (78,27);
+			                cout <<"|_______________________________|" << endl;
+			                locate(78,28);
+			                system("pause");
+			                cls();
+			
+			            } else {
+			                cout << "ha alcanzado el numero maximo de horarios" << endl;
+			            }
+			            break;
+			
+			        case 2:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Dermatologia";
+			                horarioElegido.dia        = "Miercoles";
+			                horarioElegido.horaInicio = "3:00 PM";
+			                horarioElegido.horaFin    = "7:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,24);
+			                cout <<" ________________________________" << endl;
+			                locate(78,25);
+			                cout <<"| cita confirmada en el horario  |" << endl;
+			                locate(78,26);
+			                cout <<"| "<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |" << endl;
+			                locate (78,27);
+			                cout <<"|________________________________|" << endl;
+			                locate(78,28);
+			                system("pause");
+			                cls();
+			
+			            } else {
+			                cout << "ha alcanzado el numero maximo de horarios" << endl;
+			            }
+			            break;
+			
+			        case 3:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Dermatologia";
+			                horarioElegido.dia        = "Viernes";
+			                horarioElegido.horaInicio = "10:00 AM";
+			                horarioElegido.horaFin    = "2:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,24);
+			                cout <<" _______________________________" << endl;
+			                locate(78,25);
+			                cout <<"| cita confirmada en el horario |" << endl;
+			                locate(78,26);
+			                cout <<"| "<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |" << endl;
+			                locate (78,27);
+			                cout <<"|_______________________________|" << endl;
+			                locate(78,28);
+			                system("pause");
+			                cls();
+			
+			            } else {
+			                cout << "ha alcanzado el numero maximo de horarios" << endl;
+			            }
+			            	break;
+							default:
+			        		locate(78,25); cout << "Opcion invalida" << endl;
+			            break;
+					    }
+					   break;
+			    case 5:
+			    locate(72,17); cout << "---->| HORARIO                      |" << endl;
+			    locate(72,18); cout << "     |1.-Martes: 10:00 AM - 2:00 PM |" << endl;
+			    locate(72,19); cout << "     |2.-Jueves: 3:00 PM - 7:00 PM  |" << endl;
+			    locate(72,20); cout << "     |______________________________|" << endl;
+			    locate(72,22); cout << "     |elija un horario              |" << endl;
+			    locate(96,22); cin >> h;
+			    switch(h){
+			        case 1:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Endocrinologia";
+			                horarioElegido.dia = "Martes";
+			                horarioElegido.horaInicio = "10:00 AM";
+			                horarioElegido.horaFin = "2:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,24);
+			                cout <<" _______________________________"<<endl;
+			                locate(78,25);
+			                cout <<"| cita confirmada en el horario |"<<endl;
+			                locate(78,26);
+			                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"      |"<< endl;
+			                locate(78,27);
+			                cout <<"|_______________________________|"<<endl;
+			                locate(78,28);
+			                system("pause");
+			                cls();
+			            } else {
+			                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+			            }
+			            break;
+			        case 2:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Endocrinologia";
+			                horarioElegido.dia = "Jueves";
+			                horarioElegido.horaInicio = "3:00 PM";
+			                horarioElegido.horaFin = "7:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,24);
+			                cout <<" _______________________________"<<endl;
+			                locate(78,25);
+			                cout <<"| cita confirmada en el horario |"<<endl;
+			                locate(78,26);
+			                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"      |"<< endl;
+			                locate(78,27);
+			                cout <<"|_______________________________|"<<endl;
+			                locate(78,28);
+			                system("pause");
+			                cls();
+			            } else {
+			                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+			            }
+			            break;
+			        default:
+			            locate(78,25);cout << "Opcion invalida." << endl;
+			            break;
+			    }
+			    break;
+			    case 6:
+			    locate(72,18); cout << "---->| HORARIO                            |" << endl;
+			    locate(72,19); cout << "     |1.-Lunes: 3:00 PM - 7:00 PM         |" << endl;
+			    locate(72,20); cout << "     |2.-Miercoles: 10:00 AM - 2:00 PM    |" << endl;
+			    locate(72,21); cout << "     |3.-Viernes: 3:00 PM - 7:00 PM       |" << endl;
+			    locate(72,23); cout << "     |elija un horario                    |" << endl;
+			    locate(96,23); cin >> h;
+			    switch(h){
+			        case 1:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Gastroenterologia";
+			                horarioElegido.dia = "Lunes";
+			                horarioElegido.horaInicio = "3:00 PM";
+			                horarioElegido.horaFin = "7:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,25);
+			                cout <<" _______________________________"<<endl;
+			                locate(78,26);
+			                cout <<"| cita confirmada en el horario |"<<endl;
+			                locate(78,27);
+			                cout <<"| "<< horarioElegido.dia <<","<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"       |"<< endl;
+			                locate(78,28);
+			                cout <<"|_______________________________|"<<endl;
+			                locate(78,29);
+			                system("pause");
+			                cls();
+			            } else {
+			                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+			            }
+			            break;
+			        case 2:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Gastroenterologia";
+			                horarioElegido.dia = "Miercoles";
+			                horarioElegido.horaInicio = "10:00 AM";
+			                horarioElegido.horaFin = "2:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,25);
+			                cout <<" _______________________________"<<endl;
+			                locate(78,26);
+			                cout <<"| cita confirmada en el horario |"<<endl;
+			                locate(78,27);
+			                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"  |"<<endl;
+			                locate(78,28);
+			                cout <<"|_______________________________|"<<endl;
+			                locate(78,29);
+			                system("pause");
+			                cls();
+			            } else {
+			                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+			            }
+			            break;
+			        case 3:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Gastroenterologia";
+			                horarioElegido.dia = "Viernes";
+			                horarioElegido.horaInicio = "3:00 PM";
+			                horarioElegido.horaFin = "7:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,25);
+			                cout <<" _______________________________"<<endl;
+			                locate(78,26);
+			                cout <<"| cita confirmada en el horario |"<<endl;
+			                locate(78,27);
+			                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"     |"<<endl;
+			                locate(78,28);
+			                cout <<"|_______________________________|"<<endl;
+			                locate(78,29);
+			                system("pause");
+			                cls();
+			            } else {
+			                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+			            }
+			            break;
+			        default:
+			            locate(78,26);cout << "Opcion invalida" << endl;
+			            break;
+			    }
+			    break;
+			    case 7:
+			    locate(72,19); cout << "---->| HORARIO                       |" << endl;
+			    locate(72,20); cout << "     |1.-Lunes: 2:00 PM - 6:00 PM    |" << endl;
+			    locate(72,21); cout << "     |2.-Miercoles: 9:00 AM - 1:00 PM|" << endl;
+			    locate(72,23); cout << "     |elija un horario               |" << endl;
+			    locate(96,23); cin >> h;
+			    switch(h){
+			        case 1:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Geriatria";
+			                horarioElegido.dia = "Lunes";
+			                horarioElegido.horaInicio = "2:00 PM";
+			                horarioElegido.horaFin = "6:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,26);
+			                cout <<" _______________________________"<<endl;
+			                locate(78,27);
+			                cout <<"| cita confirmada en el horario |"<<endl;
+			                locate(78,28);
+			                cout <<"| "<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"      |"<< endl;
+			                locate(78,29);
+			                cout <<"|_______________________________|"<<endl;
+			                locate(78,30);
+			                system("pause");
+			                cls();
+			            } else {
+			                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+			            }
+			            break;
+			        case 2:
+			            if (totalHorarios < MAX_HORARIOS) {
+			            	horarioElegido.especialidad = "Geriatria";
+			                horarioElegido.dia = "Miercoles";
+			                horarioElegido.horaInicio = "9:00 AM";
+			                horarioElegido.horaFin = "1:00 PM";
+			
+			                listaHorarios[totalHorarios++] = horarioElegido;
+			
+			                locate(78,26);
+			                cout <<" _______________________________"<<endl;
+			                locate(78,27);
+			                cout <<"| cita confirmada en el horario |"<<endl;
+			                locate(78,28);
+			                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+			                locate(78,29);
+			                cout <<"|_______________________________|"<<endl;
+			                locate(78,30);
+			                system("pause");
+			                cls();
+			            } else {
+			                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+			            }
+			            break;
+			        default:
+			            locate(78,27);cout << "Opcion invalida" << endl;
+			            break;
+			    }
+			    break;
+
+				case 8:
+				    locate(72,20); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,21); cout << "     |1.-Martes: 10:00 AM - 2:00 PM     |" << endl; // Horario cambiado para evitar duplicación
+				    locate(72,22); cout << "     |2.-Jueves: 3:00 PM - 7:00 PM      |" << endl; // Horario cambiado para evitar duplicación
+				    locate(72,23); cout << "     |elija un horario                  |" << endl;
+				    locate(96,23); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Hematologia";
+				                horarioElegido.dia = "Martes";
+				                horarioElegido.horaInicio = "10:00 AM";
+				                horarioElegido.horaFin = "2:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,27);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,28);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,29);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,20);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,31);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Hematologia";
+				                horarioElegido.dia = "Jueves";
+				                horarioElegido.horaInicio = "3:00 PM";
+				                horarioElegido.horaFin = "7:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,27);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,28);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,29);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,30);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,31);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,28); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+// ... [otros cases previos]
+
+				case 9:
+				    locate(72,21); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,22); cout << "     |1.-Lunes: 8:00 AM - 12:00 PM     |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,23); cout << "     |2.-Jueves: 1:00 PM - 5:00 PM     |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,24); cout << "     |elija un horario                  |" << endl;
+				    locate(96,24); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Infectologia";
+				                horarioElegido.dia = "Lunes";
+				                horarioElegido.horaInicio = "8:00 AM";
+				                horarioElegido.horaFin = "12:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,28);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,29);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,30);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,31);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,32);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Infectologia";
+				                horarioElegido.dia = "Jueves";
+				                horarioElegido.horaInicio = "1:00 PM";
+				                horarioElegido.horaFin = "5:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,28);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,29);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,30);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,31);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,32);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,29); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+				    // ... [otros cases previos]
+
+				case 10:
+				    locate(72,22); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,23); cout << "     |1.-Martes: 10:00 AM - 2:00 PM    |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,24); cout << "     |2.-Viernes: 3:00 PM - 7:00 PM    |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,25); cout << "     |elija un horario                 |" << endl;
+				    locate(96,25); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Nefrologia";
+				                horarioElegido.dia = "Martes";
+				                horarioElegido.horaInicio = "10:00 AM";
+				                horarioElegido.horaFin = "2:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,29);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,30);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,31);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,32);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,33);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Nefrologia";
+				                horarioElegido.dia = "Viernes";
+				                horarioElegido.horaInicio = "3:00 PM";
+				                horarioElegido.horaFin = "7:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,29);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,30);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,31);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,32);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,33);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,30); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+		// ... [otros cases previos]
+
+				case 11:
+				    locate(72,23); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,24); cout << "     |1.-Jueves: 9:00 AM - 1:00 PM     |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,25); cout << "     |2.-Sabado: 11:00 AM - 3:00 PM    |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,26); cout << "     |elija un horario                 |" << endl;
+				    locate(96,26); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Neumologia";
+				                horarioElegido.dia = "Jueves";
+				                horarioElegido.horaInicio = "9:00 AM";
+				                horarioElegido.horaFin = "1:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,30);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,31);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,32);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,33);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,34);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Neumologia";
+				                horarioElegido.dia = "Sabado";
+				                horarioElegido.horaInicio = "11:00 AM";
+				                horarioElegido.horaFin = "3:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,30);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,31);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,32);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,33);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,34);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,31); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+				    // ... [otros cases previos]
+
+				case 12:
+				    locate(72,24); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,25); cout << "     |1.-Martes: 10:00 AM - 2:00 PM    |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,26); cout << "     |2.-Jueves: 3:00 PM - 7:00 PM     |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,27); cout << "     |elija un horario                 |" << endl;
+				    locate(96,27); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Neurologia";
+				                horarioElegido.dia = "Martes";
+				                horarioElegido.horaInicio = "10:00 AM";
+				                horarioElegido.horaFin = "2:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,31);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,32);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,33);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,34);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,35);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Neurologia";
+				                horarioElegido.dia = "Jueves";
+				                horarioElegido.horaInicio = "3:00 PM";
+				                horarioElegido.horaFin = "7:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,31);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,32);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,33);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,34);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,35);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,32); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+
+				case 13:
+				    locate(72,25); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,26); cout << "     |1.-Lunes: 11:00 AM - 3:00 PM     |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,27); cout << "     |2.-Viernes: 4:00 PM - 8:00 PM    |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,28); cout << "     |elija un horario                 |" << endl;
+				    locate(96,28); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Oncologia";
+				                horarioElegido.dia = "Lunes";
+				                horarioElegido.horaInicio = "11:00 AM";
+				                horarioElegido.horaFin = "3:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,32);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,33);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,34);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,35);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,36);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Oncologia";
+				                horarioElegido.dia = "Viernes";
+				                horarioElegido.horaInicio = "4:00 PM";
+				                horarioElegido.horaFin = "8:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,32);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,33);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,34);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,35);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,36);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,33); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+// ... [otros cases previos]
+
+				case 14:
+				    locate(72,26); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,27); cout << "     |1.-Martes: 10:00 AM - 2:00 PM    |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,28); cout << "     |2.-Jueves: 3:00 PM - 7:00 PM     |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,29); cout << "     |elija un horario                 |" << endl;
+				    locate(96,29); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Oftalmologia";
+				                horarioElegido.dia = "Martes";
+				                horarioElegido.horaInicio = "10:00 AM";
+				                horarioElegido.horaFin = "2:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,33);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,34);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,35);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,36);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,37);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Oftalmologia";
+				                horarioElegido.dia = "Jueves";
+				                horarioElegido.horaInicio = "3:00 PM";
+				                horarioElegido.horaFin = "7:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,33);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,34);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,35);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,36);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,37);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,34); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+				
+
+				case 15:
+				    locate(72,27); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,28); cout << "     |1.-Martes: 4:00 PM - 8:00 PM     |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,29); cout << "     |2.-Viernes: 9:00 AM - 1:00 PM    |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,30); cout << "     |elija un horario                 |" << endl;
+				    locate(96,30); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Ortopedia";
+				                horarioElegido.dia = "Martes";
+				                horarioElegido.horaInicio = "4:00 PM";
+				                horarioElegido.horaFin = "8:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,34);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,35);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,36);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,37);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,38);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Ortopedia";
+				                horarioElegido.dia = "Viernes";
+				                horarioElegido.horaInicio = "9:00 AM";
+				                horarioElegido.horaFin = "1:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,34);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,35);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,36);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,37);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,38);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,35); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+				case 16:
+				    locate(72,28); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,29); cout << "     |1.-Jueves: 3:00 PM - 7:00 PM     |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,30); cout << "     |2.-Sábado: 10:00 AM - 2:00 PM    |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,31); cout << "     |elija un horario                 |" << endl;
+				    locate(96,31); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Otorrinolaringologia";
+				                horarioElegido.dia = "Jueves";
+				                horarioElegido.horaInicio = "3:00 PM";
+				                horarioElegido.horaFin = "7:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,35);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,36);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,37);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,38);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,39);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Otorrinolaringologia";
+				                horarioElegido.dia = "Sábado";
+				                horarioElegido.horaInicio = "10:00 AM";
+				                horarioElegido.horaFin = "2:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,35);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,36);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,37);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,38);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,39);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,27); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+				
+				case 17:
+				    locate(72,29); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,30); cout << "     |1.-Martes: 10:00 AM - 2:00 PM    |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,31); cout << "     |2.-Jueves: 4:00 PM - 8:00 PM     |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,32); cout << "     |elija un horario                 |" << endl;
+				    locate(96,32); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Psiquiatria";
+				                horarioElegido.dia = "Martes";
+				                horarioElegido.horaInicio = "10:00 AM";
+				                horarioElegido.horaFin = "2:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,36);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,37);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,38);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,39);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,40);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Psiquiatria";
+				                horarioElegido.dia = "Jueves";
+				                horarioElegido.horaInicio = "4:00 PM";
+				                horarioElegido.horaFin = "8:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,36);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,37);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,38);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,39);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,40);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,37); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+				
+				// ... [otros cases siguientes]
+				// ... [otros cases previos]
+				
+				case 18:
+				    locate(72,30); cout << "---->| HORARIO                         |" << endl;
+				    locate(72,31); cout << "     |1.-Martes: 3:00 PM - 7:00 PM     |" << endl; // Horario propuesto para evitar superposición
+				    locate(72,32); cout << "     |2.-Viernes: 9:00 AM - 1:00 PM    |" << endl; // Otro horario propuesto para evitar superposición
+				    locate(72,33); cout << "     |elija un horario                 |" << endl;
+				    locate(96,33); cin >> h;
+				    switch(h){
+				        case 1:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Reumatologia";
+				                horarioElegido.dia = "Martes";
+				                horarioElegido.horaInicio = "3:00 PM";
+				                horarioElegido.horaFin = "7:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,37);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,38);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,39);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,40);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,41);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        case 2:
+				            if (totalHorarios < MAX_HORARIOS) {
+				                horarioElegido.especialidad = "Reumatologia";
+				                horarioElegido.dia = "Viernes";
+				                horarioElegido.horaInicio = "9:00 AM";
+				                horarioElegido.horaFin = "1:00 PM";
+				
+				                listaHorarios[totalHorarios++] = horarioElegido;
+				
+				                locate(78,37);
+				                cout <<" _______________________________"<<endl;
+				                locate(78,38);
+				                cout <<"| cita confirmada en el horario |"<<endl;
+				                locate(78,39);
+				                cout <<"|"<< horarioElegido.dia <<", "<< horarioElegido.horaInicio <<" - "<< horarioElegido.horaFin <<"   |"<<endl;
+				                locate(78,40);
+				                cout <<"|_______________________________|"<<endl;
+				                locate(78,41);
+				                system("pause");
+				                cls();
+				            } else {
+				                cout<<"ha alcanzado el numero maximo de horarios"<<endl;
+				            }
+				            break;
+				        default:
+				            locate(78,38); 
+				            cout << "Opcion invalida" << endl;
+				            break;
+				    }
+				    break;
+                    case 19:
+                        op = 0;
+                        cls();
+                        break;
+                    default:
+                        break;
+                }
+        }
+    } while(op != 0);
+}
+struct Medico {
+    string nombre_m;
+    string especialidad;
+    string idiomas;
+    string certificacion;
+    string horario; // o cualquier otro quinto campo que necesites
+};
+
+void rectangulo_E(int x,int y ,int ancho,int alto,const char*texto){
+	cls();
+	
+	for(int i=x;i<=x+ancho;i++){
+		locate(i,y);
+		cout<<'=';
+		locate(i,y+alto);
+		cout<<'_';
+	}
+	
+	for(int i=y;i<=y+alto;i++){
+		locate(x,i);
+		cout<<'|';
+		locate(x+ancho,i);
+		cout<<'|';
+	}
+	
+	locate(41,7);
+	cout<<texto;
+	
+	locate(20,20);	
+}
+
+const int MAX_MEDICOS = 20; 
+
+Medico listaMedicos[MAX_MEDICOS] = {
+    {"Dr. Juan Perez"         , "Medicina General/Familiar", "Espanol, Ingles"         , "MD, Certificacion en Medicina Familiar", "Lunes a Viernes: 9 AM - 5 PM"},
+    {"Dra. Maria Garcia"      , "Pediatria"                , "Espanol, Ingles, Frances", "MD, Certificacion en Pediatria"        , "Lunes a Viernes: 10 AM - 4 PM"},
+    {"Dra. Ana Torres"        , "Ginecologia y Obstetricia", "Espanol, Ingles"         , "MD, Certificacion en Ginecologia"      , "Lunes a Viernes: 10 AM - 3 PM"},
+    {"Dr. Carlos Gomez"       , "Cardiologia"              , "Espanol, Aleman"         , "MD, Certificacion en Cardiologia"      , "Lunes a Viernes: 9 AM - 2 PM"},
+    {"Dra. Laura Rodriguez"   , "Dermatologia"             , "Espanol, Italiano"       , "MD, Certificacion en Dermatologia"     , "Martes y Jueves: 1 PM - 6 PM"},
+    {"Dr. Diego Martinez"     , "Endocrinologia"           , "Espanol, Portugues"      , "MD, Certificacion en Endocrinologia"   , "Lunes a Viernes: 8 AM - 12 PM"},
+    {"Dr. Jose Hernandez"     , "Gastroenterologia"        , "Espanol"                 , "MD, Certificacion en Gastroenterologia", "Lunes, Miercoles y Viernes: 11 AM - 3 PM"},
+    {"Dra. Carmen Jimenez"    , "Geriatria"                , "Espanol, Ingles, Aleman" , "MD, Certificacion en Geriatria"        , "Lunes a Viernes: 10 AM - 4 PM"},
+    {"Dr. Mario Diaz"         , "Hematologia"              , "Espanol, Frances"        , "MD, Certificacion en Hematologia"      , "Lunes a Viernes: 9 AM - 1 PM"},
+    {"Dra. Lucia Moreno"      , "Infectologia"             , "Espanol, Ingles"         , "MD, Certificacion en Infectologia"     , "Martes y Jueves: 10 AM - 5 PM"},
+    {"Dr. Alejandro Fernandez", "Nefrologia"               , "Espanol, Italiano"       , "MD, Certificacion en Nefrologia"       , "Miercoles y Viernes: 9 AM - 2 PM"},
+    {"Dra. Teresa Gonzalez"   , "Neumologia"               , "Espanol, Ingles"         , "MD, Certificacion en Neumologia"       , "Lunes a Viernes: 11 AM - 4 PM"},
+    {"Dr. Fernando Ruiz"      , "Neurologia"               , "Espanol, Ruso"           , "MD, Certificacion en Neurologia"       , "Lunes a Viernes: 10 AM - 3 PM"},
+    {"Dra. Isabel Romero"     , "Oncologia"                , "Espanol, Chino Mandarin" , "MD, Certificacion en Oncologia"        , "Lunes, Miercoles y Viernes: 9 AM - 1 PM"},
+    {"Dr. Javier Vasquez"     , "Oftalmologia"             , "Espanol, Japones"        , "MD, Certificacion en Oftalmologia"     , "Martes y Jueves: 12 PM - 5 PM"},
+    {"Dr. Luis Mendez"        , "Ortopedia"                , "Espanol, Coreano"        , "MD, Certificacion en Ortopedia"        , "Lunes a Viernes: 8 AM - 12 PM"},
+    {"Dra. Cristina Sanchez"  , "Otorrinolaringologia"     , "Espanol, Ingles, Italiano", "MD, Certificacion en Otorrinolaringologia", "Lunes a Viernes: 2 PM - 6 PM"},
+    {"Dr. Sergio Castro"      , "Psiquiatria"              , "Espanol, Frances, Aleman", "MD, Certificacion en Psiquiatria"      , "Lunes a Viernes: 10 AM - 4 PM"},
+    {"Dra. Patricia Ortiz"    , "Reumatologia"             , "Espanol, Arabe"          , "MD, Certificacion en Reumatologia"     , "Martes y Jueves: 9 AM - 3 PM"},
+     
+};
+
+
+void mostrarPerfilMedico(int indice) {
+	  
+    if (indice < 0 || indice >= MAX_MEDICOS) {
+        cout << "Índice fuera de rango. No existe tal médico." << endl;
+        return;
+    }
+    
+	saveDefaultColor();    //GUARDA VALORES PREDETERMINADOS EN CUANTO A COLOR.
+	setColor(rlutil::CYAN);// ESTABLECE COLOR. 
+	
+	rectangulo_E(39,8 ,70,10,"DATOS");
+	
+	resetColor();          //REESTABLECE EL COLOR.
+	
+    Medico medico = listaMedicos[indice];
+    	locate(40,9);
+		cout << "NOMBRE                  : " << medico.nombre_m << endl;
+		locate(40,10);
+		cout << "ESPECIALIDAD            : " << medico.especialidad << endl;
+		locate(40,11);
+		cout << "EXPERIENCIA             : " << medico.idiomas << endl;
+		locate(40,12);
+		cout << "CALIFICACIONES/EDUCACION: " << medico.certificacion<< endl; 
+		locate(40,13);
+		cout << "HORARIOS DE CONSULTA    : " << medico.horario<< endl;
+		 rlutil::resetColor(); 
+       	locate(40,14);
+       	setColor(LIGHTGREEN);  //ESTABLECE COLOR.
+       	cout<<"presione ENTER para volver..."<<endl;
+       	resetColor();          //REESTABLECE EL COLOR.
+       	
+		cin.get(); // Esto pausará hasta que presiones Enter
+		cls(); // Limpia la consola 
+		
+}
+
+void especialidad_medicos() { 
+
+ 
+int op = 1, m = 0;
+    hidecursor();//solo en el menu-
+  
+    do{
+     
+	 	locate(40,9); cout <<  " ________________________________________________"  <<endl;
+	    locate(40,10); cout << "|   |           ESPECIALIDAD/MEDICO              |" << endl;
+		locate(40,11); cout << "|---|--------------------------------------------|" << endl;
+		locate(40,12); cout << "|1. | Medicina General/Familiar: Dr. Juan Perez  |" << endl;
+		locate(40,13); cout << "|2. | Pediatria: Dra. Maria Garcia               |" << endl;
+		locate(40,14); cout << "|3. | Ginecologia y Obstetricia: Dra. Ana Torres |" << endl;
+		locate(40,15); cout << "|4. | Cardiologia: Dr. Carlos Gomez              |" << endl;
+		locate(40,16); cout << "|5. | Dermatologia: Dra. Laura Rodriguez         |" << endl;
+		locate(40,17); cout << "|6. | Endocrinologia: Dr. Diego Martinez         |" << endl;
+		locate(40,18); cout << "|7. | Gastroenterologia: Dr. Jose Hernandez      |" << endl;
+		locate(40,19); cout << "|8. | Geriatria: Dra. Carmen Jimenez             |" << endl;
+		locate(40,20); cout << "|9. | Hematologia: Dr. Mario Diaz                |" << endl;
+		locate(40,21); cout << "|10.| Infectologia: Dra. Lucia Moreno            |" << endl;
+		locate(40,22); cout << "|11.| Nefrologia: Dr. Alejandro Fernandez        |" << endl;
+		locate(40,23); cout << "|12.| Neumologia: Dra. Teresa Gonzalez           |" << endl;
+		locate(40,24); cout << "|13.| Neurologia: Dr. Fernando Ruiz              |" << endl;
+		locate(40,25); cout << "|14.| Oncologia: Dra. Isabel Romero              |" << endl;
+		locate(40,26); cout << "|15.| Oftalmologia: Dr. Javier Vasquez           |" << endl;
+		locate(40,27); cout << "|16.| Ortopedia: Dr. Luis Mendez                 |" << endl;
+		locate(40,28); cout << "|17.| Otorrinolaringologia: Dra. Cristina Sanchez|" << endl;
+		locate(40,29); cout << "|18.| Psiquiatria: Dr. Sergio Castro             |" << endl;
+		locate(40,30); cout << "|19.| Reumatologia: Dra. Patricia Ortiz          |" << endl;
+		locate(40,31); cout << "| SALIR                                          |" << endl;
+		locate(40,32); cout << "|___|____________________________________________|" << endl;
+                      
+	    locate(39,12+m);
+        cout << (char)175 <<endl; // Flecha
+        
+        switch(getkey()){
+        	
+        	case 14:
+        		locate(39,12+m);
+        		cout <<" "<<endl; // Flecha
+        		m--;
+        		 if(m < 0) {
+                    m = 0;
+                }
+        		break;
+        	case 15:
+        		locate(39,12+m);
+        		cout <<" "<<endl; // Flecha
+        			m++;
+        		 if(m> 19) {
+                    m = 19;
+                }
+        		
+				break;	
+			case 1:
+				switch(m){
+			    case 0:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 1:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 2:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 3:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 4:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 5:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 6:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 7:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 8:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 9:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 10:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 11:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 12:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 13:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 14:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 15:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 16:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 17:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+			    case 18:
+			        cls();
+			        mostrarPerfilMedico(m);
+			        break;
+				case 19:
+					op=0;
+				cls();
+				break;
+				} 
+			  break;	
+		}
+	}while(op!=0);
+}
+
+void registro() {
+saveDefaultColor();    //GUARDA VALORES PREDETERMINADOS EN CUANTO A COLOR.
+setColor(LIGHTCYAN);
+locate(40, 2);cout << "HA REGISTRADO LAS SIGUIENTES CITAS "<<endl;
+    
+    for (int i = 0; i < totalHorarios; ++i) {
+    	cout << "----------------------"<<endl;
+    	cout<<  "ESPECIALIDAD:        "<< listaHorarios[i].especialidad <<endl;
+        cout << "DIA:                 "<< listaHorarios[i].dia         <<endl;
+        cout << "INICIO:              "<< listaHorarios[i].horaInicio  <<endl;
+        cout << "FIN:                 "<< listaHorarios[i].horaFin     <<endl;
+        cout << "----------------------" << endl;	
+	}
+resetColor();	
+   system("pause");
+	cls();
+}
+
+void ayuda(){	
+	int y=0,op=1;
+	
+	
+    do {
+    	hidecursor();
+        locate(40,9); cout <<  " _______________________________________________" << endl;
+        locate(40,10); cout << "|    SISTEMA DE GESTION HOSPITALARIA            |" << endl;
+        locate(40,11); cout << "|---------------------------------------------- | " << endl;
+        locate(40,12); cout << "|        --como te podemos ayudar--             |" << endl;
+        locate(40,13); cout << "|   1.-AGENDAR UNA CITA                         |" << endl;
+        locate(40,14); cout << "|   2.-VER MEDICOS Y ESPECIALIDADES             |" << endl;
+        locate(40,15); cout << "|   3.-VER REGISTRO DE CITAS                    |" << endl;
+        locate(40,16); cout << "|   4.-PRUEBAS DE LABORATORIO                   |" << endl;
+        locate(40,17); cout << "|   5.-BOLETA                                   |" << endl;
+        locate(40,18); cout << "|   6.-SALIR                                    |" << endl;
+        locate(40,19); cout << "|_______________________________________________|" << endl;
+        locate(41,13+y); cout << char(175) << endl;
+        int key = getkey();
+        switch(key) {
+            case 14:
+                y--;
+                if(y < 0) {
+                    y = 0;
+                }
+                break;
+            case 15:
+                y++;
+                if(y > 5) {
+                    y = 5;
+                }
+                break;
+                	
+            case 1:
+                switch(y) {
+                	
+                    case 0:
+                    	cls();//ojo
+                        agendar();
+                        break;
+                    case 1:
+                    	 cls();
+                    	 especialidad_medicos();
+                         break;
+            		case 2:
+            			cls();
+            			 registro();
+            			 break;
+            		case 3:
+            			cls();
+            			serviciosD_L();
+            			 break;
+					break;	
+					case 4:
+						cls();
+                    	mostrarBoleta();
+                     	break;
+					 break;   
+                    case 5:
+                        op = 5;
+                        break;     
+                }
+            default:
+        		        break;
+        }
+    } while(op != 5);
+}
+
+int main() {
+    rectangulo(43,1,64,12,"CLINICA VIDA NUEVA");
+    locate(45,5);
+    cout<<"PORFAVOR INGRESE SUS DATOS PARA UNA MEJOR ATENCION"<<endl;
+   	Persona nuevaPersona = ingresarDatosPersona(); // Obtener los datos de la persona
+   	cls();
+	mostrarDatosPersona(nuevaPersona);
+	
+    ayuda();
+    return 0;
+}
